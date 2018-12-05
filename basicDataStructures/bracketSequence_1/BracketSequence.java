@@ -1,39 +1,35 @@
+package basicDataStructures.bracketSequence_1;
+
 import java.util.Stack;
+import java.util.Scanner;
 
-public class BracketSequence {
-
-    private static String checkBrackets(String str) {
-        int savedIndex = 0;
+class BracketSequence {
+    public static void main(String[] args) {
         Stack stack = new Stack();
-        char[] arr = str.toCharArray();
+        Stack indexes = new Stack();
+        Scanner scanner = new Scanner(System.in);
+        char[] arr = scanner.nextLine().toCharArray();
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == '[' || arr[i] == '{' || arr[i] == '(') {
                 stack.push(arr[i]);
-                savedIndex = i + 1;
-            } else {
-                if (arr[i] != ']' && arr[i] != ')' && arr[i] != '}')
-                    continue;
-                if (stack.isEmpty()) return String.valueOf(i + 1);
-                String top = stack.pop().toString();
+                indexes.push(i + 1);
+            } else if (arr[i] == ']' || arr[i] == ')' || arr[i] == '}') {
+                if (stack.isEmpty()) {
+                    System.out.println(String.valueOf(i + 1));
+                    return;
+                }
+                String top = stack.peek().toString();
                 if (top.equals("[") && arr[i] != ']' ||
                         top.equals("(") && arr[i] != ')' ||
                         top.equals("{") && arr[i] != '}') {
-                    return String.valueOf(i + 1);
+                    System.out.println(String.valueOf(i + 1));
+                    return;
+                } else {
+                    stack.pop();
+                    indexes.pop();
                 }
             }
         }
-        return (stack.isEmpty()) ? "Success" : String.valueOf(savedIndex);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(checkBrackets("[]"));
-        System.out.println(checkBrackets("{}[]"));
-        System.out.println(checkBrackets("[()]"));
-        System.out.println(checkBrackets("(())"));
-        System.out.println(checkBrackets("{[]}()"));
-        System.out.println(checkBrackets("{"));
-        System.out.println(checkBrackets("{[}"));
-        System.out.println(checkBrackets("foo(bar);"));
-        System.out.println(checkBrackets("foo(bar[i)"));
+        System.out.println(stack.isEmpty() ? "Success" : String.valueOf(indexes.firstElement()));
     }
 }
