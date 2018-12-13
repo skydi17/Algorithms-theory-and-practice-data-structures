@@ -1,6 +1,3 @@
-package priorityQueues.parallelProcessing_3;
-
-import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -9,38 +6,48 @@ public class ParallelProcessing {
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
         int m = scanner.nextInt();
-        String[] res = new String[m];
         long[] t = new long[m];
         for (int i = 0; i < m; i++) {
             t[i] = scanner.nextInt();
         }
 
-        //Comparator<Integer> comparator = new Processor();
         PriorityQueue<Processor> queue =
-                new PriorityQueue<Processor>(n,(a,b) -> (int) (a.getTime() - b.getTime()));
-        //PriorityQueue<Processor> queue = new PriorityQueue<Processor>(n, comparator);
+                new PriorityQueue<>(n,(a,b) -> (int) (a.getTime() - b.getTime()));
 
-        for (int i = 0; i < m; i++) {
-            long timeLeft = 0;
+        long time = 0;
+        int i = 0;
+        StringBuilder res = new StringBuilder();
+
+        while (i < m) {
+            boolean flag = true;
+            //fill empty buffer
+            if (queue.isEmpty()) {
+                while ((queue.size() < n || flag) && i != m - 1) {
+                    res.append(queue.size()).append(" ").append(time).append("\n");
+                    if (t[i] > 0) {
+                        flag = false;
+                        Processor processor = new Processor(time + t[i], queue.size());
+                        queue.add(processor);
+                    }
+                    i++;
+                }
+            }
+
+            //getting current time
             if (!queue.isEmpty()) {
-                timeLeft = Math.max(t[i], queue.peek().getTime());
-            } else {
-                timeLeft = t[i];
+                time = queue.peek().getTime();
             }
-            while (!queue.isEmpty() && queue.peek().getTime() < timeLeft) {
-                res[queue.peek().getI()] = queue.peek().getProcNumber() + " " + queue.peek().getTime();
-                queue.poll();
-            }
-            if (!(queue.size() == n)) {
-                Processor processor = new Processor(t[i] + timeLeft, queue.size(), i);
-                queue.add(processor);
+            //check executed tasks and fill buffer on current time
+            while (!queue.isEmpty() && queue.peek().getTime() == time && i < m) {
+                res.append(queue.peek().getProcNumber()).append(" ").append(time).append("\n");
+                if (t[i] > 0) {
+                    Processor processor = new Processor(time + t[i], queue.peek().getProcNumber());
+                    queue.add(processor);
+                    queue.poll();
+                }
+                i++;
             }
         }
-        /*while (!queue.isEmpty()) {
-
-        } */
-        for (int i = 0; i < m; i++) {
-            System.out.println(res[i]);
-        }
+        System.out.println(res);
     }
 }
