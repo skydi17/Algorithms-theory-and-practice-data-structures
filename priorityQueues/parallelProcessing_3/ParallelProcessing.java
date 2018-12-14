@@ -12,7 +12,8 @@ public class ParallelProcessing {
         }
 
         PriorityQueue<Processor> queue =
-                new PriorityQueue<>(n,(a,b) -> (int) (a.getTime() - b.getTime()));
+                new PriorityQueue<>(n,(a,b) -> (int) (a.getTime() - b.getTime() != 0 ?
+                        a.getTime() - b.getTime() : a.getProcNumber() - b.getProcNumber()));
 
         long time = 0;
         int i = 0;
