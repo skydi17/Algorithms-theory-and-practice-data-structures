@@ -8,45 +8,31 @@ public class ParallelProcessing {
         int m = scanner.nextInt();
         long[] t = new long[m];
         for (int i = 0; i < m; i++) {
-            t[i] = scanner.nextInt();
+            t[i] = scanner.nextLong();
         }
 
         PriorityQueue<Processor> queue =
                 new PriorityQueue<>(n,(a,b) -> (int) (a.getTime() - b.getTime() != 0 ?
                         a.getTime() - b.getTime() : a.getProcNumber() - b.getProcNumber()));
 
-        long time = 0;
-        int i = 0;
         StringBuilder res = new StringBuilder();
 
-        while (i < m) {
-            boolean flag = true;
-            //fill empty buffer
-            if (queue.isEmpty()) {
-                while ((queue.size() < n || flag) && i != m - 1) {
-                    res.append(queue.size()).append(" ").append(time).append("\n");
-                    if (t[i] > 0) {
-                        flag = false;
-                        Processor processor = new Processor(time + t[i], queue.size());
-                        queue.add(processor);
-                    }
-                    i++;
-                }
+        int ind = 0;
+        while (queue.size() < n && ind != m) {
+            res.append(queue.size()).append(" ").append(0).append("\n");
+            if (t[ind] != 0) {
+                Processor processor = new Processor(t[ind], queue.size());
+                queue.add(processor);
             }
+            ind++;
+        }
 
-            //getting current time
-            if (!queue.isEmpty()) {
-                time = queue.peek().getTime();
-            }
-            //check executed tasks and fill buffer on current time
-            while (!queue.isEmpty() && queue.peek().getTime() == time && i < m) {
-                res.append(queue.peek().getProcNumber()).append(" ").append(time).append("\n");
-                if (t[i] > 0) {
-                    Processor processor = new Processor(time + t[i], queue.peek().getProcNumber());
-                    queue.add(processor);
-                    queue.poll();
-                }
-                i++;
+        for (int i = ind; i < m; i++) {
+            res.append(queue.peek().getProcNumber()).append(" ").append(queue.peek().getTime()).append("\n");
+            if (t[i] != 0) {
+                Processor processor = new Processor(queue.peek().getTime() + t[i], queue.peek().getProcNumber());
+                queue.poll();
+                queue.add(processor);
             }
         }
         System.out.println(res);
