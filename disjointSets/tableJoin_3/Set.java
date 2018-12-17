@@ -1,50 +1,48 @@
 package disjointSets.tableJoin_3;
 
+import java.util.ArrayList;
+
 public class Set {
-    int[] parent;
-    int[] rank;
+    int[] tables;
+    int[] indexes;
     int max;
 
     public Set(int n) {
-        parent = new int[n];
-        rank = new int[n];
+        tables = new int[n];
+        indexes = new int[n];
         max = 0;
     }
 
-    public void makeSet(int tableNumb, int i) {
-        parent[tableNumb] = i;
-        rank[tableNumb] = 0;
-        if (i > max) {
-            max = i;
+    public void makeSet(int tableNumb, int size) {
+        tables[tableNumb] = size;
+        indexes[tableNumb] = tableNumb;
+        if (size > max) {
+            max = size;
         }
     }
 
     public int find(int i) {
-        if (i != parent[i]) {
-            parent[i] = find(parent[i]);
+        ArrayList<Integer> steps = new ArrayList<>();
+        while (i != indexes[i]) {
+                steps.add(i);
+                i = indexes[i];
         }
-        return parent[i];
+        for (int k = 0; k < steps.size() - 1; k++) {
+            indexes[steps.get(k)] = i;
+        }
+        return i;
     }
 
-    public int union(int i, int j) {
-        int i_id = find(i);
-        int j_id = find(j);
-        if (i_id == j_id) {
-            if (max < parent[j] + parent[i]) {
-                max = parent[j] + parent[i];
-            }
+    public int union(int destination, int source) {
+        int destination_id = find(destination);
+        int source_id = find(source);
+        if (destination_id == source_id) {
             return max;
         }
-        if (rank[i_id] > rank[j_id]) {
-            parent[j_id] = i_id;
-        } else {
-            parent[i_id] = j_id;
-            if (rank[i_id] == rank[j_id]) {
-                rank[j_id] += 1;
-            }
-        }
-        if (parent[j] + parent[i] > max) {
-            max = parent[j] + parent[i];
+        tables[destination_id] = tables[destination_id] + tables[source_id];
+        indexes[source_id] = destination_id;
+        if (tables[destination_id] > max) {
+            max = tables[destination_id];
         }
         return max;
     }
