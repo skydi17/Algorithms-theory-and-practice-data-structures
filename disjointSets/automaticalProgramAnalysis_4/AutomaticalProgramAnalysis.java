@@ -1,17 +1,8 @@
-import java.util.*;
+package disjointSets.automaticalProgramAnalysis_4;
+
+import java.util.Scanner;
 
 public class AutomaticalProgramAnalysis {
-
-    private static void fillTable(int a, int b,
-                                  Hashtable<Integer, TreeSet<Integer>> table){
-        if (!table.containsKey(a)) {
-            table.put(a, new TreeSet<>());
-        }
-        for (Integer element : table.get(a)) {
-            table.get(element).add(b);
-        }
-        table.get(a).add(b);
-    }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -19,20 +10,22 @@ public class AutomaticalProgramAnalysis {
         int e = scanner.nextInt();
         int d = scanner.nextInt();
 
-        //TreeSet set = new TreeSet();
-        Hashtable<Integer, TreeSet<Integer>>table = new Hashtable(n);
+        Set set = new Set(n + 1);
+
+        for (int i = 1; i <= n; i++) {
+            set.makeSet(i);
+        }
 
         for (int i = 0; i < e; i++) {
             int a = scanner.nextInt();
             int b = scanner.nextInt();
-            fillTable(a, b, table);
-            fillTable(b, a, table);
+            set.union(a, b);
         }
 
         for (int i = 0; i < d; i++) {
             int a = scanner.nextInt();
             int b = scanner.nextInt();
-            if (table.containsKey(a) && table.get(a).contains(b)) {
+            if (set.find(a) == set.find(b)) {
                 System.out.println("0");
                 return;
             }
