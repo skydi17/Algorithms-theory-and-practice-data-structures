@@ -1,3 +1,5 @@
+package searchTrees.binaryTreeTraversal_1;
+
 import java.util.Scanner;
 
 public class BinaryTreeTraversal {
@@ -9,9 +11,11 @@ public class BinaryTreeTraversal {
             tree.put(scanner.nextInt(),
                             scanner.nextInt(), scanner.nextInt());
         }
-        tree.inOrderTraversal(0);
-        tree.preOrderTraversal(0);
-        tree.postOrderTraversal(0);
+        tree.inOrderTraversal(tree.getParent());
+        System.out.println();
+        tree.preOrderTraversal(tree.getParent());
+        System.out.println();
+        tree.postOrderTraversal(tree.getParent());
     }
 }
 

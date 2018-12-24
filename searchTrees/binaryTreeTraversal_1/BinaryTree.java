@@ -1,44 +1,65 @@
+package searchTrees.binaryTreeTraversal_1;
+
 public class BinaryTree {
-    private int[] data;
+    private TreeNode[] data;
     private int next;
 
     BinaryTree (int size) {
-        data = new int[size + 1];
+        data = new TreeNode[size];
         next = 0;
     }
 
-    private int leftChild(int i){
-        return 2*i + 1;
-    }
+    static class TreeNode {
+        int key;
+        int leftChild;
+        int rightChild;
 
-    private int rightChild(int i){
-        return 2*i + 2;
+        TreeNode (int key, int leftChild, int rightChild) {
+            this.key = key;
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
+        }
     }
 
     void put(int key, int leftChild, int rightChild) {
         if (next != data.length) {
-            data[next] = key;
-            //data[leftChild(next)] = leftChild;
-            //data[rightChild(next)] = rightChild;
+            TreeNode node = new TreeNode(key, leftChild,rightChild);
+            data[next] = node;
             next++;
         }
     }
 
-    void inOrderTraversal(int root) {
-        inOrderTraversal(leftChild(root));
-        System.out.print(data[root] + " ");
-        inOrderTraversal(rightChild(root));
+    TreeNode getParent() {
+        return data[0];
     }
 
-    void preOrderTraversal(int root) {
-        System.out.print(data[root] + " ");
-        preOrderTraversal(leftChild(root));
-        preOrderTraversal(rightChild(root));
+    void inOrderTraversal(TreeNode root) {
+        if (root.leftChild != -1) {
+            inOrderTraversal(data[root.leftChild]);
+        }
+        System.out.print(root.key + " ");
+        if (root.rightChild != -1) {
+            inOrderTraversal(data[root.rightChild]);
+        }
     }
 
-    void postOrderTraversal(int root) {
-        postOrderTraversal(leftChild(root));
-        postOrderTraversal(rightChild(root));
-        System.out.print(data[root] + " ");
+    void preOrderTraversal(TreeNode root) {
+        System.out.print(root.key + " ");
+        if (root.leftChild != -1) {
+            preOrderTraversal(data[root.leftChild]);
+        }
+        if (root.rightChild != -1) {
+            preOrderTraversal(data[root.rightChild]);
+        }
+    }
+
+    void postOrderTraversal(TreeNode root) {
+        if (root.leftChild != -1) {
+            postOrderTraversal(data[root.leftChild]);
+        }
+        if (root.rightChild != -1) {
+            postOrderTraversal(data[root.rightChild]);
+        }
+        System.out.print(root.key + " ");
     }
 }
